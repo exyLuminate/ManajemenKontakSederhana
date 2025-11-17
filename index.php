@@ -2,7 +2,18 @@
 require_once __DIR__ . '/inc/functions.php';
 require_login();
 
-$contacts = read_contacts();
+$contacts_all = read_contacts(); 
+$search_query = trim($_GET['q'] ?? '');
+
+if (!empty($search_query)) {
+    $contacts = array_filter($contacts_all, function($c) use ($search_query) {
+        $q = strtolower($search_query);
+        return (strpos(strtolower($c['name']), $q) !== false) || 
+               (strpos(strtolower($c['email']), $q) !== false);
+    });
+} else {
+    $contacts = $contacts_all;
+}
 
 $success_msg = get_flash_message('success');
 $error_msg = get_flash_message('danger');
@@ -10,7 +21,7 @@ $error_msg = get_flash_message('danger');
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar Kontak</title>
+  <title>Daftar Kontak - MyContacts</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
@@ -48,6 +59,19 @@ $error_msg = get_flash_message('danger');
     </a>
   </div>
   
+  <form method="GET" action="index.php" class="mb-4">
+    <div class="input-group">
+      <input type="text" class="form-control" name="q" 
+             placeholder="Cari berdasarkan nama atau email..." 
+             value="<?= esc($search_query) ?>">
+      <button class="btn btn-outline-primary" type="submit">
+        <i class="bi bi-search"></i> Cari
+      </button>
+      <a href="index.php" class="btn btn-outline-danger" title="Reset Pencarian">
+        <i class="bi bi-x-lg"></i>
+      </a>
+    </div>
+  </form>
   <?php if ($success_msg): ?>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     <?= $success_msg ?>
@@ -78,7 +102,11 @@ $error_msg = get_flash_message('danger');
             <tr>
               <td colspan="5">
                 <div class="alert alert-secondary text-center mb-0">
-                  Belum ada kontak. Silakan <a href="add.php" class="alert-link">tambah kontak baru</a>.
+                  <?php if (!empty($search_query)): ?>
+                    Tidak ada kontak yang cocok dengan pencarian "<strong><?= esc($search_query) ?></strong>".
+                  <?php else: ?>
+                    Belum ada kontak. Silakan <a href="add.php" class="alert-link">tambah kontak baru</a>.
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>
@@ -87,8 +115,19 @@ $error_msg = get_flash_message('danger');
             <?php foreach ($contacts as $c): ?>
               <tr>
                 <td><?= esc($c['name']) ?></td>
-                <td><?= esc($c['email']) ?></td>
-                <td><?= esc($c['phone']) ?></td>
+                
+                <td>
+                  <a href="mailto:<?= esc($c['email']) ?>" title="Kirim email">
+                    <?= esc($c['email']) ?>
+                  </a>
+                </td>
+                
+                <td>
+                  <a href="tel:<?= esc($c['phone']) ?>" title="Telepon">
+                    <?= esc($c['phone']) ?>
+                  </a>
+                </td>
+
                 <td>
                   <?php if (!empty($c['socials'])): ?>
                     <?php foreach ($c['socials'] as $s): 

@@ -31,7 +31,7 @@ if (!empty($old_data) && $old_data['id'] === $id) {
     $contact = $contact_from_json;
 }
 
-$contact['socials'] = $contact['socials'] ?? []; // Pastikan array
+$contact['socials'] = $contact['socials'] ?? []; 
 ?>
 
 <head>
