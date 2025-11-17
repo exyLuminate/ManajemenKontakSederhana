@@ -5,6 +5,23 @@ require_login();
 $contacts_all = read_contacts(); 
 $search_query = trim($_GET['q'] ?? '');
 
+$sort_by = $_GET['sort'] ?? 'name'; 
+$sort_dir = $_GET['dir'] ?? 'asc';  
+$next_sort_dir = ($sort_dir === 'asc') ? 'desc' : 'asc';
+
+$sortable_columns = ['name', 'email']; 
+if (!in_array($sort_by, $sortable_columns)) {
+    $sort_by = 'name'; 
+}
+
+usort($contacts_all, function($a, $b) use ($sort_by, $sort_dir) {
+    if ($sort_dir === 'asc') {
+        return strcasecmp($a[$sort_by], $b[$sort_by]); 
+    } else {
+        return strcasecmp($b[$sort_by], $a[$sort_by]); 
+    }
+});
+
 if (!empty($search_query)) {
     $contacts = array_filter($contacts_all, function($c) use ($search_query) {
         $q = strtolower($search_query);
@@ -64,14 +81,18 @@ $error_msg = get_flash_message('danger');
       <input type="text" class="form-control" name="q" 
              placeholder="Cari berdasarkan nama atau email..." 
              value="<?= esc($search_query) ?>">
+      <input type="hidden" name="sort" value="<?= esc($sort_by) ?>">
+      <input type="hidden" name="dir" value="<?= esc($sort_dir) ?>">
+      
       <button class="btn btn-outline-primary" type="submit">
         <i class="bi bi-search"></i> Cari
       </button>
-      <a href="index.php" class="btn btn-outline-danger" title="Reset Pencarian">
+      <a href="index.php" class="btn btn-outline-danger" title="Reset Pencarian & Urutan">
         <i class="bi bi-x-lg"></i>
       </a>
     </div>
   </form>
+
   <?php if ($success_msg): ?>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     <?= $success_msg ?>
@@ -88,15 +109,31 @@ $error_msg = get_flash_message('danger');
   <div class="card shadow-sm border-0">
     <div class="card-body p-0">
       <table class="table table-striped table-hover mb-0 align-middle">
+        
         <thead class="table-dark">
           <tr>
-            <th scope="col">Nama</th>
-            <th scope="col">Email</th>
+            <th scope="col">
+              <a href="index.php?sort=name&dir=<?= $next_sort_dir ?>&q=<?= esc($search_query) ?>" class="text-white text-decoration-none">
+                Nama
+                <?php if ($sort_by === 'name'): ?>
+                  <i class="bi bi-arrow-<?= ($sort_dir === 'asc') ? 'up' : 'down' ?>"></i>
+                <?php endif; ?>
+              </a>
+            </th>
+            <th scope="col">
+              <a href="index.php?sort=email&dir=<?= $next_sort_dir ?>&q=<?= esc($search_query) ?>" class="text-white text-decoration-none">
+                Email
+                <?php if ($sort_by === 'email'): ?>
+                  <i class="bi bi-arrow-<?= ($sort_dir === 'asc') ? 'up' : 'down' ?>"></i>
+                <?php endif; ?>
+              </a>
+            </th>
             <th scope="col">Telepon</th>
             <th scope="col">Sosial Media</th>
             <th scope="col" class="text-end">Aksi</th>
           </tr>
         </thead>
+        
         <tbody>
           <?php if (empty($contacts)): ?>
             <tr>
@@ -115,13 +152,11 @@ $error_msg = get_flash_message('danger');
             <?php foreach ($contacts as $c): ?>
               <tr>
                 <td><?= esc($c['name']) ?></td>
-                
                 <td>
                   <a href="mailto:<?= esc($c['email']) ?>" title="Kirim email">
                     <?= esc($c['email']) ?>
                   </a>
                 </td>
-                
                 <td>
                   <?php if (!empty($c['phone'])): ?>
                     <a href="https://wa.me/<?= esc($c['phone']) ?>" target="_blank" title="Chat via WhatsApp">
@@ -131,7 +166,6 @@ $error_msg = get_flash_message('danger');
                     -
                   <?php endif; ?>
                 </td>
-
                 <td>
                   <?php if (!empty($c['socials'])): ?>
                     <?php foreach ($c['socials'] as $s): 
