@@ -1,4 +1,4 @@
-<html>
+<?php require_once __DIR__ . '/inc/functions.php'; ?>
 <head>
   <meta charset="utf-8">
   <title>Login</title>
@@ -29,4 +29,3 @@
 </div>
 
 </body>
-</html>

@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/inc/functions.php';
+require_login();
+?>
+
 <head>
   <meta charset="utf-8">
   <title>Tambah Kontak</title>
@@ -38,5 +43,4 @@
     <button class="btn btn-primary">Simpan</button>
   </form>
 </div>
-
 </body>

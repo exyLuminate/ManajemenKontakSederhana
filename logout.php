@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . '/inc/functions.php';
 
-header('Location: index.php');
-exit;
+start_session();
+session_unset();
+session_destroy();
+
+redirect('login.php');
