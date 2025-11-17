@@ -69,6 +69,8 @@ function get_sosmed_details(string $url): array {
         return ['icon' => 'bi-twitter-x', 'name' => 'X (Twitter)'];
     } elseif (strpos($url_lower, 'linkedin.com') !== false) {
         return ['icon' => 'bi-linkedin', 'name' => 'LinkedIn'];
+    } elseif (strpos($url_lower, 'github.com') !== false) {
+        return ['icon' => 'bi-github', 'name' => 'GitHub'];
     } else {
         return ['icon' => 'bi-globe', 'name' => 'Website'];
     }

@@ -7,11 +7,13 @@ $username = trim($_POST['username'] ?? '');
 $password = trim($_POST['password'] ?? '');
 
 if ($username !== ADMIN_USER) {
-    die("Username salah.");
+    set_flash_message('danger', 'Username atau password salah.');
+    redirect('login.php');
 }
 
 if (!password_verify($password, ADMIN_PASS_HASH)) {
-    die("Password salah.");
+    set_flash_message('danger', 'Username atau password salah.');
+    redirect('login.php');
 }
 
 $_SESSION['logged'] = true;

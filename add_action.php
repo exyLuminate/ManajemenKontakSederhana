@@ -2,7 +2,6 @@
 require_once __DIR__ . '/inc/functions.php';
 require_login();
 
-// 1. Ambil & Sanitasi Input Mentah
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
@@ -22,14 +21,12 @@ $errors = [];
 validate_contact_data($data, $errors);
 
 if (!empty($errors)) {
-    // Jika validasi GAGAL, simpan error dan data lama di session
     start_session();
     $_SESSION['old_data'] = $data;
     set_flash_message('danger', implode('<br>', $errors));
     redirect('add.php');
 }
 
-// 2. Jika Validasi Sukses: Baca, Tambah, Tulis
 $contacts = read_contacts();
 
 $new = [

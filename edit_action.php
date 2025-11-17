@@ -23,16 +23,13 @@ $errors = [];
 validate_contact_data($data, $errors);
 
 if (!empty($errors)) {
-    // Jika validasi GAGAL, simpan error dan data lama di session
     set_flash_message('danger', implode('<br>', $errors));
     start_session();
     $_SESSION['old_data'] = $data;
     
-    // Redirect kembali ke halaman edit dengan ID yang sama
     redirect('edit.php?id=' . esc($id));
 }
 
-// Jika Validasi Sukses: Baca, Edit, Tulis
 $contacts = read_contacts();
 $found = false;
 
