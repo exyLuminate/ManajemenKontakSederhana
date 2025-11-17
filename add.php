@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/inc/functions.php';
 require_login();
+
+// Ambil data lama jika ada (dari validasi gagal)
+$old_data = get_flash_message('old_data') ?? [];
+$error_msg = get_flash_message('danger');
 ?>
 
 <head>
@@ -19,25 +23,32 @@ require_login();
 <div class="container py-4">
   <h3>Tambah Kontak</h3>
 
+  <?php if ($error_msg): ?>
+      <div class="alert alert-danger"><?php echo $error_msg; ?></div>
+  <?php endif; ?>
+
   <form action="add_action.php" method="post">
     <div class="mb-3">
       <label>Nama</label>
-      <input type="text" name="name" class="form-control" required>
+      <input type="text" name="name" class="form-control" required 
+             value="<?= esc($old_data['name'] ?? '') ?>"> 
     </div>
 
     <div class="mb-3">
       <label>Email</label>
-      <input type="email" name="email" class="form-control">
+      <input type="email" name="email" class="form-control" required
+             value="<?= esc($old_data['email'] ?? '') ?>"> 
     </div>
 
     <div class="mb-3">
       <label>Telepon</label>
-      <input type="text" name="phone" class="form-control">
+      <input type="text" name="phone" class="form-control"
+             value="<?= esc($old_data['phone'] ?? '') ?>"> 
     </div>
 
     <div class="mb-3">
       <label>Sosial Media (1 link per baris)</label>
-      <textarea name="socials" class="form-control"></textarea>
+      <textarea name="socials" class="form-control" rows="3"><?= esc(implode("\n", $old_data['socials'] ?? [])) ?></textarea>
     </div>
 
     <button class="btn btn-primary">Simpan</button>
