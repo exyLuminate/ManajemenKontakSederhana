@@ -89,14 +89,15 @@ function validate_contact_data(array $data, &$errors) {
         $errors[] = "Format email tidak valid.";
     }
 
-    if (!empty($data['phone'])) {
-        if (!preg_match("/^[0-9\s\+\-]+$/", $data['phone'])) {
-            $errors[] = "Nomor Telepon hanya boleh mengandung angka, spasi, plus, atau strip.";
-        } else {
-            $phone_digits = preg_replace("/[^0-9]/", "", $data['phone']);
-            if (strlen($phone_digits) > 15) {
-                $errors[] = "Nomor Telepon maksimal 15 digit.";
-            }
+   if (!empty($data['phone'])) {
+        if (!preg_match("/^\d+$/", $data['phone'])) {
+            $errors[] = "Nomor WhatsApp hanya boleh berisi angka (format internasional).";
+        }
+        elseif (strlen($data['phone']) < 10 || strlen($data['phone']) > 15) {
+            $errors[] = "Nomor WhatsApp harus antara 10-15 digit.";
+        }
+        elseif (strpos($data['phone'], '0') === 0) {
+            $errors[] = "Nomor WhatsApp harus diawali kode negara (misal: 62), bukan 0.";
         }
     }
     

@@ -81,11 +81,15 @@ $error_msg = get_flash_message('danger');
             </div>
 
             <div class="mb-3">
-              <label for="phoneInput" class="form-label">Telepon</label>
+              <label for="phoneInput" class="form-label">Nomor WhatsApp</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
-                <input type="text" name="phone" id="phoneInput" class="form-control"
+                <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
+                <input type="tel" name="phone" id="phoneInput" class="form-control"
+                       placeholder="Contoh: 6281234567890" 
                        value="<?= esc($old_data['phone'] ?? '') ?>"> 
+              </div>
+              <div class="form-text">
+                Masukkan nomor dengan kode negara (misal: 62 untuk Indonesia), tanpa tanda + atau 0 di depan.
               </div>
             </div>
 

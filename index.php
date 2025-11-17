@@ -123,9 +123,13 @@ $error_msg = get_flash_message('danger');
                 </td>
                 
                 <td>
-                  <a href="tel:<?= esc($c['phone']) ?>" title="Telepon">
-                    <?= esc($c['phone']) ?>
-                  </a>
+                  <?php if (!empty($c['phone'])): ?>
+                    <a href="https://wa.me/<?= esc($c['phone']) ?>" target="_blank" title="Chat via WhatsApp">
+                      <i class="bi bi-whatsapp me-1"></i><?= esc($c['phone']) ?>
+                    </a>
+                  <?php else: ?>
+                    -
+                  <?php endif; ?>
                 </td>
 
                 <td>
